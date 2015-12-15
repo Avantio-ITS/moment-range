@@ -22,7 +22,7 @@
   "directories": {
     "lib": "./lib"
   },
-  "version": "2.1.1",
+  "version": "2.1.2",
   "engines": {
     "node": "*"
   },
@@ -54,7 +54,7 @@
     "type": "Public Domain",
     "url": "https://github.com/gf3/moment-range/raw/master/UNLICENSE"
   },
-  "publishConfig" : {
-    "registry" : "https://nexus.avantio.int/repository/npm-private/"
+  "publishConfig": {
+    "registry": "https://nexus.avantio.int/repository/npm-private/"
   }
 }
