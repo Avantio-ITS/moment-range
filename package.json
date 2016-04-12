@@ -43,9 +43,6 @@
     "mocha": "^2.1.0",
     "should": "^5.0.1"
   },
-  "peerDependencies": {
-    "moment": ">= 1"
-  },
   "repository": {
     "type": "git",
     "url": "https://git@github.com/gf3/moment-range.git"
@@ -54,7 +51,10 @@
     "type": "Public Domain",
     "url": "https://github.com/gf3/moment-range/raw/master/UNLICENSE"
   },
-  "publishConfig" : {
-    "registry" : "https://nexus.avantio.int/repository/npm-private/"
+  "publishConfig": {
+    "registry": "https://nexus.avantio.int/repository/npm-private/"
+  },
+  "dependencies": {
+    "moment": "^2.12.0"
   }
 }
