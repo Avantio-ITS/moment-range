@@ -220,86 +220,6 @@ describe('DateRange', function() {
 
       acc.should.eql(['2012-01', '2012-02', '2012-03']);
     });
-
-    it('should not include .end in the iteration if exclusive is set to true when iterating by string', function() {
-      var my1 = moment('2014-04-02T00:00:00.000Z');
-      var my2 = moment('2014-04-04T00:00:00.000Z');
-      var dr1 = moment.range(my1, my2);
-      var acc = [];
-
-      dr1.by('d', (function(d) {
-        acc.push(d.utc().format('YYYY-MM-DD'));
-      }), false);
-
-      acc.should.eql(['2014-04-02', '2014-04-03', '2014-04-04']);
-
-      acc = [];
-
-      dr1.by('d', (function(d) {
-        acc.push(d.utc().format('YYYY-MM-DD'));
-      }), true);
-
-      acc.should.eql(['2014-04-02', '2014-04-03']);
-
-      acc = [];
-
-      dr1.by('d', (function(d) {
-        acc.push(d.utc().format('YYYY-MM-DD'));
-      }));
-
-      acc.should.eql(['2014-04-02', '2014-04-03', '2014-04-04']);
-    });
-
-    it('should not include .end in the iteration if exclusive is set to true when iterating by range', function() {
-      var my1 = moment('2014-04-02T00:00:00.000Z');
-      var my2 = moment('2014-04-04T00:00:00.000Z');
-      var dr1 = moment.range(my1, my2);
-      var dr2 = moment.range(my1, moment('2014-04-03T00:00:00.000Z'));
-      var acc = [];
-
-      dr1.by(dr2, function(d) {
-        acc.push(d.utc().format('YYYY-MM-DD'));
-      });
-
-      acc.should.eql(['2014-04-02', '2014-04-03', '2014-04-04']);
-
-      acc = [];
-
-      dr1.by(dr2, (function(d) {
-        acc.push(d.utc().format('YYYY-MM-DD'));
-      }), false);
-
-      acc.should.eql(['2014-04-02', '2014-04-03', '2014-04-04']);
-
-      acc = [];
-
-      dr1.by(dr2, (function(d) {
-        acc.push(d.utc().format('YYYY-MM-DD'));
-      }), true);
-
-      acc.should.eql(['2014-04-02', '2014-04-03']);
-    });
-
-    it('should be exlusive when using by with minutes as well', function() {
-      var d1 = moment('2014-01-01T00:00:00.000Z');
-      var d2 = moment('2014-01-01T00:06:00.000Z');
-      var dr = moment.range(d1, d2);
-      var acc = [];
-
-      dr.by('m', (function(d) {
-        acc.push(d.utc().format('mm'));
-      }));
-
-      acc.should.eql(['00', '01', '02', '03', '04', '05', '06']);
-
-      acc = [];
-
-      dr.by('m', (function(d) {
-        acc.push(d.utc().format('mm'));
-      }), true);
-
-      acc.should.eql(['00', '01', '02', '03', '04', '05']);
-    });
   });
 
   describe('#contains()', function() {
@@ -332,17 +252,6 @@ describe('DateRange', function() {
       dr1.contains(m4).should.be.true;
       dr1.contains(dr1).should.be.true;
     });
-
-    it('should be exlusive when the exclusive param is set', function() {
-      var dr1 = moment.range(m1, m2);
-
-      dr1.contains(dr1, true).should.be.false;
-      dr1.contains(dr1, false).should.be.true;
-      dr1.contains(dr1).should.be.true;
-      dr1.contains(m2, true).should.be.false;
-      dr1.contains(m2, false).should.be.true;
-      dr1.contains(m2).should.be.true;
-    });
   });
 
   describe('#overlaps()', function() {
@@ -353,8 +262,7 @@ describe('DateRange', function() {
       var dr4 = moment.range(m1, m3);
 
       dr1.overlaps(dr2).should.be.true;
-      dr1.overlaps(dr3).should.be.false;
-      dr1.overlaps(dr3, false).should.be.true;
+      dr1.overlaps(dr3).should.be.true;
       dr4.overlaps(dr3).should.be.false;
     });
   });
@@ -421,31 +329,19 @@ describe('DateRange', function() {
       should.strictEqual(dr1.intersect(dr2), null);
     });
 
-    it('should work with [---]{---} overlaps where (a=[], b={})', function() {
-      var dr1 = moment.range(d5, d6);
-      var dr2 = moment.range(d6, d7);
-
-      should.strictEqual(dr1.intersect(dr2), null);
-    });
-
     it('should work with [---{]---} overlaps where (a=[], b={})', function() {
       var dr1 = moment.range(d5, d6);
       var dr2 = moment.range(d6, d7);
 
-      dr1.intersect(dr2, false).isSame(moment.range(d6, d6)).should.be.true;
-    });
-
-    it('should work with {---}[---] overlaps where (a=[], b={})', function() {
-      var dr1 = moment.range(d6, d7);
-      var dr2 = moment.range(d5, d6);
-      should.strictEqual(dr1.intersect(dr2), null);
+      dr1.intersect(dr2).isSame(moment.range(d6, d6)).should.be.true;
     });
 
     it('should work with {---[}---] overlaps where (a=[], b={})', function() {
       var dr1 = moment.range(d6, d7);
       var dr2 = moment.range(d5, d6);
 
-      dr1.intersect(dr2, false).isSame(moment.range(d6, d6)).should.be.true;
+
+      dr1.intersect(dr2).isSame(moment.range(d6, d6)).should.be.true;
     });
 
     it('should work with {--[===]--} overlaps where (a=[], b={})', function() {
@@ -540,39 +436,18 @@ describe('DateRange', function() {
       should.strictEqual(dr1.add(dr2), null);
     });
 
-    it('should not add ranges with [---]{---} overlaps where (a=[], b={})', function() {
+    it('should add ranges with [---]{---} overlaps if border dates are not excluded where (a=[], b={})', function() {
       var dr1 = moment.range(d5, d6);
       var dr2 = moment.range(d6, d7);
 
-      should.strictEqual(dr1.add(dr2), null);
+      dr1.add(dr2).isSame(moment.range(d5, d7)).should.be.true;
     });
 
     it('should add ranges with [---]{---} overlaps if border dates are not excluded where (a=[], b={})', function() {
       var dr1 = moment.range(d5, d6);
       var dr2 = moment.range(d6, d7);
 
-      dr1.add(dr2, false).isSame(moment.range(d5, d7)).should.be.true;
-    });
-
-    it('should not add ranges with [---]{---} overlaps where (a=[], b={})', function() {
-      var dr1 = moment.range(d5, d6);
-      var dr2 = moment.range(d6, d7);
-
-      should.strictEqual(dr1.add(dr2), null);
-    });
-
-    it('should add ranges with [---]{---} overlaps if border dates are not excluded where (a=[], b={})', function() {
-      var dr1 = moment.range(d5, d6);
-      var dr2 = moment.range(d6, d7);
-
-      dr1.add(dr2, false).isSame(moment.range(d5, d7)).should.be.true;
-    });
-
-    it('should not add ranges with {---}[---] overlaps where (a=[], b={})', function() {
-      var dr1 = moment.range(d6, d7);
-      var dr2 = moment.range(d5, d6);
-
-      should.strictEqual(dr1.add(dr2), null);
+      dr1.add(dr2).isSame(moment.range(d5, d7)).should.be.true;
     });
 
     it('should add ranges {--[===]--} overlaps where (a=[], b={})', function() {
@@ -663,14 +538,7 @@ describe('DateRange', function() {
       var dr1 = moment.range(d5, d6);
       var dr2 = moment.range(d6, d7);
 
-      dr1.subtract(dr2).should.eql([dr1]);
-    });
-
-    it('should turn [--{]--} into [--] if border dates are not excluded where (a=[], b={})', function() {
-      var dr1 = moment.range(d5, d6);
-      var dr2 = moment.range(d6, d7);
-
-      dr1.subtract(dr2, false).should.eql([dr1]);
+      dr1.subtract(dr2).should.eql([moment.range(d5, d6)]);
     });
 
     it('should turn {--} [--] into (--) where (a=[], b={})', function() {
@@ -685,13 +553,6 @@ describe('DateRange', function() {
       var dr2 = moment.range(d6, d7);
 
       dr1.subtract(dr2).should.eql([dr1]);
-    });
-
-    it('should turn {--[}--] into {--} if border dates are not excluded where (a=[], b={})', function() {
-      var dr1 = moment.range(d5, d6);
-      var dr2 = moment.range(d6, d7);
-
-      dr1.subtract(dr2, false).should.eql([dr1]);
     });
 
     it('should turn [--{==}--] into (--) where (a=[], b={})', function() {

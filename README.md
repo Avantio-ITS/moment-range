@@ -88,15 +88,6 @@ range.contains(lol); // true
 range.contains(wat); // false
 ```
 
-A optional second parameter indicates if the end of the range
-should be excluded when testing for inclusion
-
-``` javascript
-range.contains(end) // true
-range.contains(end, false) // true
-range.contains(end, true) // false
-```
-
 Find out if your moment falls within a date range:
 
 ``` javascript
@@ -111,9 +102,8 @@ when.within(range); // true
 Does it overlap another range?
 
 ``` javascript
-range.overlaps(range2); // true
-range.overlaps(range3); // false
-range.overlaps(range3, false); // true
+range.overlaps(range2);
+range.overlaps(range3);
 ```
 
 What are the intersecting ranges?
@@ -121,7 +111,6 @@ What are the intersecting ranges?
 ``` javascript
 range.intersect(range2); // [moment.range(lol, end)]
 range.intersect(range3); // [null]
-range.intersect(range3, false); // [moment.range(end, end)]
 ```
 
 Add/combine/merge overlapping ranges.
@@ -129,7 +118,6 @@ Add/combine/merge overlapping ranges.
 ``` javascript
 range.add(range2); // [moment.range(start, wat)]
 range.add(range3); // [null]
-range.add(range3, false); // [moment.range(start, wat)]
 
 var range4 = moment.range(new Date(2012, 3, 1), new Date(2012, 3, 15);
 range.add(range4); // [null]
@@ -172,19 +160,6 @@ range1.by(range2, function(moment) {
 acc.length == 5 // true
 ```
 
-Iteration also supports excluding the end value of the range by setting the
-last parameter to `true`.
-
-``` javascript
-var acc = [];
-
-range1.by('d', function (moment) {
-  acc.push(moment)
-}, true);
-
-acc.length == 4 // true
-```
-
 ### Compare
 
 Compare range lengths or add them together with simple math:
@@ -194,7 +169,6 @@ var r_1 = moment.range(new Date(2011, 2, 5), new Date(2011, 3, 15));
 var r_2 = moment.range(new Date(1995, 0, 1), new Date(1995, 12, 25));
 
 r_2 > r_1 // true
-
 r_1 + r_2 // duration of both ranges in milliseconds
 
 Math.abs(r_1 - r_2); // difference of ranges in milliseconds
