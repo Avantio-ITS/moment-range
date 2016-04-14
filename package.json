@@ -32,7 +32,7 @@
         "test": "grunt mochaTest"
     },
     "dependencies": {
-        "moment": "^2.12.0"
+        "moment": ">=1"
     },
     "devDependencies": {
         "grunt": "~0.4.1",
