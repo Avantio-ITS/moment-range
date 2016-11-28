@@ -116,7 +116,7 @@ DateRange.prototype.contains = function(other) {
  * @return {!boolean}
  */
 DateRange.prototype.overlaps = function(range) {
-    return this.intersect(range) !== null;
+    return this.start.isSameOrBefore(range.end) && this.end.isSameOrAfter(range.start);
 };
 
 /**
