@@ -4,13 +4,13 @@
     define(["moment"], function (a0) {
       return (root['DateRange'] = factory(a0));
     });
-  } else if (typeof exports === 'object') {
+  } else if (typeof module === 'object' && module.exports) {
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
     module.exports = factory(require("moment"));
   } else {
-    root['DateRange'] = factory(moment);
+    root['DateRange'] = factory(root["moment"]);
   }
 }(this, function (moment) {
 
@@ -19,6 +19,7 @@
 //-----------------------------------------------------------------------------
 
 
+moment.utc(new Date(2016, 0, 1));
 
 var INTERVALS = {
     year: true,
@@ -69,14 +70,8 @@ function DateRange(start, end) {
         }
     }
 
-    this.start = moment(s);
-    this.end = moment(e);
-
-    if (this.end.isBefore(this.start)) {
-        var ohDearAux = this.start;
-        this.start = this.end;
-        this.end = ohDearAux;
-    }
+    this.start = (s instanceof moment) ? s : moment(s);
+    this.end = (e instanceof moment) ? e : moment(e);
 }
 
 /**
@@ -420,7 +415,7 @@ DateRange.prototype.diff = function(unit) {
  * @return {!DateRange}
  */
 moment.range = function(start, end) {
-    if (start in INTERVALS) {
+    if (!(start instanceof moment) && start in INTERVALS) {
         return new DateRange(moment(this).startOf(start), moment(this).endOf(start));
     } else {
         return new DateRange(start, end);
