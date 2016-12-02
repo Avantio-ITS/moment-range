@@ -22,7 +22,7 @@
   "directories": {
     "lib": "./lib"
   },
-  "version": "2.1.9",
+  "version": "2.1.10",
   "engines": {
     "node": "*"
   },
